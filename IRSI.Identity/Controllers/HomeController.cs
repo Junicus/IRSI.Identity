@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IRSI.Identity.Controllers
 {
@@ -13,17 +14,9 @@ namespace IRSI.Identity.Controllers
             return View();
         }
 
-        public IActionResult About()
+        [Authorize]
+        public IActionResult TestLogin()
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
             return View();
         }
 

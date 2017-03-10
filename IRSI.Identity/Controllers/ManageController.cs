@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using IRSI.Identity.Models;
-using IRSI.Identity.Models.ManageViewModels;
+using IRSI.Identity.ViewModels.ManageViewModels;
 using IRSI.Identity.Services;
 
 namespace IRSI.Identity.Controllers

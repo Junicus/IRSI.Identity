@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using IRSI.Identity.Models;
-using IRSI.Identity.Models.AccountViewModels;
+using IRSI.Identity.ViewModels.AccountViewModels;
 using IRSI.Identity.Services;
 
 namespace IRSI.Identity.Controllers
@@ -191,12 +191,37 @@ namespace IRSI.Identity.Controllers
             }
             else
             {
+                // if new user, create account and login (only external login is active directory)
+                var email = info.Principal.FindFirstValue(ClaimTypes.Name);
+                var name = info.Principal.Identity.Name;
+                var user = new ApplicationUser { UserName = email, Email = email, Name = name };
+                var userManager_result = await _userManager.CreateAsync(user);
+                if(userManager_result.Succeeded)
+                {
+                    userManager_result = await _userManager.AddLoginAsync(user, info);
+                    if (userManager_result.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        _logger.LogInformation(6, "User created an account using {Name} provider.", info.LoginProvider);
+                        return RedirectToLocal(returnUrl);
+                    }
+                }
+                AddErrors(userManager_result);
+            }
+
+            return RedirectToAction(nameof(Login));
+
+            //removed code to redirect to confirmation view
+            /*            
+            else
+            {
                 // If the user does not have an account, then ask the user to create an account.
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email });
             }
+            */
         }
 
         //
@@ -446,7 +471,8 @@ namespace IRSI.Identity.Controllers
         //
         // GET /Account/AccessDenied
         [HttpGet]
-        public IActionResult AccessDenied()
+        [AllowAnonymous]
+        public IActionResult AccessDenied(string returnUrl = null)
         {
             return View();
         }
