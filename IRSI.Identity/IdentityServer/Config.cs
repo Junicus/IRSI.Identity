@@ -56,12 +56,12 @@ namespace IRSI.Identity.IdentityServer
             clients.Add(new Client
             {
                 ClientId = "mvc.hybrid",
-                ClientName = "IRSI.Services",
+                ClientName = "IRSI Services",
                 ClientSecrets = {
                     new Secret("secret".Sha256())
                 },
                 AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
-                RequireConsent = false,
+                RequireConsent = true,
                 RedirectUris = {
                     "http://localhost:52000/signin-oidc",
                     "https://irsiservices.azurewebsites.net/signin-oidc"
@@ -74,8 +74,6 @@ namespace IRSI.Identity.IdentityServer
                 AllowedScopes = {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
-                    IdentityServerConstants.StandardScopes.Email,
-                    IdentityServerConstants.StandardScopes.OfflineAccess,
                     "sos_api", "team_api", "irsi_identity"
                 },
                 AllowOfflineAccess = true

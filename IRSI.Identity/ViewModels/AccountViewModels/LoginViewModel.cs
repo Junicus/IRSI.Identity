@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IRSI.Identity.Models.Account;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,17 +7,11 @@ using System.Threading.Tasks;
 
 namespace IRSI.Identity.ViewModels.AccountViewModels
 {
-    public class LoginViewModel
+    public class LoginViewModel : LoginInputModel
     {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-
-        [Display(Name = "Remember me?")]
-        public bool RememberMe { get; set; }
+        public bool AllowRememberLogin { get; set; }
+        public bool EnableLocalLogin { get; set; }
+        public IEnumerable<ExternalProvider> ExternalProviders { get; set; }
+        public bool IsExternalLoginOnly => EnableLocalLogin == false && ExternalProviders?.Count() == 1;
     }
 }

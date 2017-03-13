@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace IRSI.Identity.Controllers
 {
+    [SecurityHeaders]
     public class HomeController : Controller
     {
         public IActionResult Index()

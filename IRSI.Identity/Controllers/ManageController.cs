@@ -14,6 +14,7 @@ using IRSI.Identity.Services;
 namespace IRSI.Identity.Controllers
 {
     [Authorize]
+    [SecurityHeaders]
     public class ManageController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
