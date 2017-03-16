@@ -99,19 +99,27 @@ namespace IRSI.Identity.IdentityServer
 
             clients.Add(new Client
             {
-                ClientId = "idManage.java",
+                ClientId = "idManage.js",
                 ClientName = "Identity Manager Client",
-                ClientSecrets =
-                {
-                    new Secret("secret".Sha256())
+                AllowedGrantTypes = GrantTypes.Implicit,
+                AllowAccessTokensViaBrowser = true,
+                RedirectUris = { 
+                    "http://localhost:4200"
                 },
-                AllowedGrantTypes = GrantTypes.ClientCredentials,
+                RequireConsent = false,
+                PostLogoutRedirectUris = {
+                    ""
+                },
+                AllowedCorsOrigins = {
+                    ""
+                },
                 AllowedScopes =
-                {
+                {   
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,                    
                     "idManage"
                 }
             });
-
             return clients;
         }
 
