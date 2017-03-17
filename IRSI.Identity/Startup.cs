@@ -131,7 +131,7 @@ namespace IRSI.Identity
                 //setup api bearer tokens against IdentityServer4
                 app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
                 {
-                    Authority = "http://localhost:52000",
+                    Authority = $"{Configuration["IdentityServerUrl"]}",
                     RequireHttpsMetadata = false,
                     ApiName = "idManage"
                 });
