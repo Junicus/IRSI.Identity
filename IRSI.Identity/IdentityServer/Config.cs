@@ -24,6 +24,12 @@ namespace IRSI.Identity.IdentityServer
                     "sosApiRole",
                     "sosApiRegion",
                     "sosApiStore"
+                }, 
+                Scopes = {
+                    new Scope {
+                        Name="sos_api",
+                        DisplayName="SOS Api"
+                    }
                 }
             });
 
@@ -37,15 +43,16 @@ namespace IRSI.Identity.IdentityServer
                     "teamApiEvent",
                     "teamApiConcept",
                     "teamApiStore"
+                },
+                Scopes = {
+                    new Scope {
+                        Name="team_api",
+                        DisplayName = "TeamSales Api"
+                    }
                 }
             });
 
-            apiResources.Add(new ApiResource
-            {
-                Name = "idManage",
-                DisplayName = "Manage Identity",
-                Description = "Lets you manager the identity server"
-            });
+            apiResources.Add(new ApiResource("id_manage", "Manage Identity"));
 
             return apiResources;
         }
@@ -108,16 +115,16 @@ namespace IRSI.Identity.IdentityServer
                 },
                 RequireConsent = false,
                 PostLogoutRedirectUris = {
-                    ""
+                    "http://localhost:4200"
                 },
                 AllowedCorsOrigins = {
-                    ""
+                    "http://localhost:4200"
                 },
                 AllowedScopes =
                 {   
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,                    
-                    "idManage"
+                    "id_manage"
                 }
             });
             return clients;
