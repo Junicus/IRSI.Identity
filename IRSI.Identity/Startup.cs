@@ -126,40 +126,27 @@ namespace IRSI.Identity
 
             app.UseStaticFiles();
 
-            app.UseWhen(context => context.Request.Path.StartsWithSegments(new PathString("/api")), branch =>
+            //Setup authentication for non api calls
+            app.UseIdentity();
+            app.UseIdentityServer();
+
+            var externalCoockieScheme = app.ApplicationServices.GetRequiredService<IOptions<IdentityOptions>>().Value.Cookies.ExternalCookieAuthenticationScheme;
+            app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions
             {
-                //setup api bearer tokens against IdentityServer4
-                app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
+                DisplayName = "IRSI Email",
+                ClientId = Configuration["Authentication:AzureAd:ClientId"],
+                ClientSecret = Configuration["Authentication:AzureAd:ClientSecret"],
+                Authority = Configuration["Authentication:AzureAd:AADInstance"] + Configuration["Authentication:AzureAd:TenantId"],
+                CallbackPath = Configuration["Authentication:AzureAd:CallbackPath"],
+                ResponseType = OpenIdConnectResponseType.IdToken,
+                AutomaticChallenge = false,
+                TokenValidationParameters = new TokenValidationParameters
                 {
-                    Authority = $"{Configuration["IdentityServerUrl"]}",
-                    RequireHttpsMetadata = false,
-                    ApiName = "idManage"
-                });
+                    NameClaimType = "name",
+                    RoleClaimType = "role"
+                }
             });
 
-            app.UseWhen(context => !context.Request.Path.StartsWithSegments(new PathString("/api")), branch =>
-            {
-                //Setup authentication for non api calls
-                app.UseIdentity();
-                app.UseIdentityServer();
-
-                var externalCoockieScheme = app.ApplicationServices.GetRequiredService<IOptions<IdentityOptions>>().Value.Cookies.ExternalCookieAuthenticationScheme;
-                app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions
-                {
-                    DisplayName = "IRSI Email",
-                    ClientId = Configuration["Authentication:AzureAd:ClientId"],
-                    ClientSecret = Configuration["Authentication:AzureAd:ClientSecret"],
-                    Authority = Configuration["Authentication:AzureAd:AADInstance"] + Configuration["Authentication:AzureAd:TenantId"],
-                    CallbackPath = Configuration["Authentication:AzureAd:CallbackPath"],
-                    ResponseType = OpenIdConnectResponseType.IdToken,
-                    AutomaticChallenge = false,
-                    TokenValidationParameters = new TokenValidationParameters
-                    {
-                        NameClaimType = "name",
-                        RoleClaimType = "role"
-                    }
-                });
-            });
 
             app.UseMvc(routes =>
             {
