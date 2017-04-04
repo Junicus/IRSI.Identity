@@ -11,7 +11,7 @@
         <ul class="nav navbar-nav navbar-right">
             <li>
                 @*<a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">Hello @tempUser.Name!</a>*@
-                <div class="navbar-text">Hello @tempUser.Name!</div>
+                <div class="navbar-text">Hello @User.Identity.Name!</div>
             </li>
             <li>
                 <button type="submit" class="btn btn-link navbar-btn navbar-link">Log out</button>

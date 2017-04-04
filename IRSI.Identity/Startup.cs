@@ -22,6 +22,7 @@ using Microsoft.Extensions.Options;
 using IdentityServer4.EntityFramework.DbContexts;
 using IRSI.Identity.IdentityServer;
 using IdentityServer4.EntityFramework.Mappers;
+using IRSI.Identity.Services.Consent;
 
 namespace IRSI.Identity
 {
@@ -104,6 +105,7 @@ namespace IRSI.Identity
 
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddSingleton<ConsentService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

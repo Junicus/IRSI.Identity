@@ -67,20 +67,21 @@ namespace IRSI.Identity.IdentityServer
                 ClientSecrets = {
                     new Secret("secret".Sha256())
                 },
-                AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
-                RequireConsent = true,
+                AllowedGrantTypes = GrantTypes.Hybrid,
+                RequireConsent = false,
                 RedirectUris = {
-                    "http://localhost:52000/signin-oidc",
+                    "http://localhost:52002/signin-oidc",
                     "https://irsiservices.azurewebsites.net/signin-oidc"
                 },
                 PostLogoutRedirectUris = {
-                    "http://localhost:52000",
+                    "http://localhost:52002",
                     "https://irsiservices.azurewebsites.net/"
                 },
-
                 AllowedScopes = {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
+                    IdentityServerConstants.StandardScopes.Email,
+                    "roles",
                     "sos_api", "team_api", "irsi_identity"
                 },
                 AllowOfflineAccess = true
@@ -136,7 +137,16 @@ namespace IRSI.Identity.IdentityServer
             identityResources.Add(new IdentityResources.OpenId());
             identityResources.Add(new IdentityResources.Profile());
             identityResources.Add(new IdentityResources.Email());
-            identityResources.Add(new IdentityResource()
+            identityResources.Add(new IdentityResource
+            {
+                Name = "roles",
+                DisplayName = "Your roles",
+                Emphasize = true,
+                UserClaims = {
+                    "role"
+                }
+            });
+            identityResources.Add(new IdentityResource
             {
                 Name = "irsi_identity",
                 DisplayName = "IRSI Identity",
@@ -148,7 +158,7 @@ namespace IRSI.Identity.IdentityServer
                     "UseSOSService",
                     "teamApiConcept",
                     "teamApiStore"
-                }
+                },
             });
 
             return identityResources;
