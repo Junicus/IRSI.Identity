@@ -23,6 +23,7 @@ using IdentityServer4.EntityFramework.DbContexts;
 using IRSI.Identity.IdentityServer;
 using IdentityServer4.EntityFramework.Mappers;
 using IRSI.Identity.Services.Consent;
+using IRSI.Identity.Services.ProfileService;
 
 namespace IRSI.Identity
 {
@@ -85,8 +86,8 @@ namespace IRSI.Identity
                     .AddOperationalStore(builder =>
                         builder.UseSqlServer(Configuration.GetConnectionString("IdentityServer"), options =>
                             options.MigrationsAssembly(migrationAssembly)))
-                    .AddAspNetIdentity<ApplicationUser>();
-
+                    .AddAspNetIdentity<ApplicationUser>()
+                    .AddProfileService<IRSIProfileService>();
             }
             else
             {
@@ -98,7 +99,8 @@ namespace IRSI.Identity
                     .AddOperationalStore(builder =>
                         builder.UseSqlServer(Configuration.GetConnectionString("IdentityServer"), options =>
                             options.MigrationsAssembly(migrationAssembly)))
-                    .AddAspNetIdentity<ApplicationUser>();
+                    .AddAspNetIdentity<ApplicationUser>()
+                    .AddProfileService<IRSIProfileService>();
             }
 
             services.AddMvc();
