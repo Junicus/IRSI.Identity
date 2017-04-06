@@ -81,10 +81,10 @@ namespace IRSI.Identity
                 services.AddIdentityServer()
                     .AddTemporarySigningCredential()
                     .AddConfigurationStore(builder =>
-                        builder.UseSqlServer(Configuration.GetConnectionString("IdentityServer"), options =>
+                        builder.UseSqlServer(Configuration.GetConnectionString("IdentityServer2"), options =>
                             options.MigrationsAssembly(migrationAssembly)))
                     .AddOperationalStore(builder =>
-                        builder.UseSqlServer(Configuration.GetConnectionString("IdentityServer"), options =>
+                        builder.UseSqlServer(Configuration.GetConnectionString("IdentityServer2"), options =>
                             options.MigrationsAssembly(migrationAssembly)))
                     .AddAspNetIdentity<ApplicationUser>()
                     .AddProfileService<IRSIProfileService>();
@@ -94,10 +94,10 @@ namespace IRSI.Identity
                 services.AddIdentityServer()
                     .AddSigningCredential(cert)
                     .AddConfigurationStore(builder =>
-                        builder.UseSqlServer(Configuration.GetConnectionString("IdentityServer"), options =>
+                        builder.UseSqlServer(Configuration.GetConnectionString("IdentityServer2"), options =>
                             options.MigrationsAssembly(migrationAssembly)))
                     .AddOperationalStore(builder =>
-                        builder.UseSqlServer(Configuration.GetConnectionString("IdentityServer"), options =>
+                        builder.UseSqlServer(Configuration.GetConnectionString("IdentityServer2"), options =>
                             options.MigrationsAssembly(migrationAssembly)))
                     .AddAspNetIdentity<ApplicationUser>()
                     .AddProfileService<IRSIProfileService>();
