@@ -68,7 +68,7 @@ namespace IRSI.Identity
             }
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("IdentityServer")));
+                options.UseSqlServer(Configuration.GetConnectionString("IdentityServer2")));
 
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddRoleManager<ApplicationRoleManager>()
