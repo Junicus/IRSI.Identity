@@ -102,7 +102,8 @@ namespace IRSI.Identity.IdentityServer
                 {
                     new Claim("sosApiEvent", "true", ClaimValueTypes.Boolean),
                     new Claim("sosApiRole", "office_manager")
-                }
+                },
+                PrefixClientClaims = false
             });
 
             clients.Add(new Client
