@@ -24,6 +24,8 @@ using IRSI.Identity.IdentityServer;
 using IdentityServer4.EntityFramework.Mappers;
 using IRSI.Identity.Services.Consent;
 using IRSI.Identity.Services.ProfileService;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 
 namespace IRSI.Identity
 {
@@ -47,10 +49,11 @@ namespace IRSI.Identity
             Configuration = builder.Build();
         }
 
-        public IConfigurationRoot Configuration { get; }
-        public IHostingEnvironment Environment { get; }
+        public IContainer ApplicationContainer { get; private set; }
+        public IConfigurationRoot Configuration { get; private set; }
+        public IHostingEnvironment Environment { get; private set; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
@@ -105,12 +108,17 @@ namespace IRSI.Identity
 
             services.AddMvc();
 
-            services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
-            services.AddSingleton<ConsentService>();
+            var containerBuilder = new ContainerBuilder();
+            containerBuilder.RegisterType<AuthMessageSender>().As<IEmailSender>();
+            containerBuilder.RegisterType<AuthMessageSender>().As<ISmsSender>();
+            containerBuilder.RegisterType<ConsentService>().AsSelf();
+            containerBuilder.Populate(services);
+            this.ApplicationContainer = containerBuilder.Build();
+
+            return new AutofacServiceProvider(this.ApplicationContainer);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -158,6 +166,8 @@ namespace IRSI.Identity
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
         }
 
         private void InitializeDatabase(IApplicationBuilder app)

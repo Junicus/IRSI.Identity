@@ -14,7 +14,7 @@ namespace IRSI.Identity.Services.Account
         public static bool ShowLogoutPrompt = true;
         public static bool AutomaticRedirectAfterSignOut = false;
 
-        public static bool WindowsAuthenticationEnabled = true;
+        public static bool WindowsAuthenticationEnabled = false;
         public static readonly string[] WindowsAuthenticationSchemes = new string[] { "Negotiate", "NTLM" };
         public static readonly string WindowsAuthenticationDisplayName = "Windows";
 
