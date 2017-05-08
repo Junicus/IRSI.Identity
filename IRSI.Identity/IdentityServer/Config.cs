@@ -10,6 +10,40 @@ namespace IRSI.Identity.IdentityServer
 {
     public static class Config
     {
+        public static IEnumerable<IdentityResource> GetIdentityResources()
+        {
+            var identityResources = new List<IdentityResource>();
+            identityResources.Add(new IdentityResources.OpenId());
+            identityResources.Add(new IdentityResources.Profile());
+            identityResources.Add(new IdentityResources.Email());
+            identityResources.Add(new IdentityResource("id_managescope", new[] { "role", "admin", "user", "id_manage", "id_manage.admin", "id_manage.user" }));
+            identityResources.Add(new IdentityResource
+            {
+                Name = "roles",
+                DisplayName = "Your roles",
+                Emphasize = true,
+                UserClaims = {
+                    "role"
+                }
+            });
+            identityResources.Add(new IdentityResource
+            {
+                Name = "irsi_identity",
+                DisplayName = "IRSI Identity",
+                Description = "Identity scope for IRSI users",
+                UserClaims =
+                {
+                    "UseAVTService",
+                    "UseTeamSalesService",
+                    "UseSOSService",
+                    "teamApiConcept",
+                    "teamApiStore"
+                },
+            });
+
+            return identityResources;
+        }
+
         public static IEnumerable<ApiResource> GetApiResources()
         {
             var apiResources = new List<ApiResource>();
@@ -24,7 +58,7 @@ namespace IRSI.Identity.IdentityServer
                     "sosApiRole",
                     "sosApiRegion",
                     "sosApiStore"
-                }, 
+                },
                 Scopes = {
                     new Scope {
                         Name="sos_api",
@@ -52,7 +86,22 @@ namespace IRSI.Identity.IdentityServer
                 }
             });
 
-            apiResources.Add(new ApiResource("id_manage", "Manage Identity"));
+            apiResources.Add(new ApiResource("id_manage")
+            {
+                ApiSecrets =
+                {
+                    new Secret("id_apiSecret".Sha256())
+                },
+                Scopes =
+                {
+                    new Scope
+                    {
+                        Name = "id_managescope",
+                        DisplayName = "Scope for the id_api ApiResource"
+                    }
+                },
+                UserClaims = { "role", "admin", "user", "id_manage", "id_manage.admin", "id_manage.user" }
+            });
 
             return apiResources;
         }
@@ -110,59 +159,29 @@ namespace IRSI.Identity.IdentityServer
             {
                 ClientId = "idManage.js",
                 ClientName = "Identity Manager Client",
+                RequireConsent = false,
+                AccessTokenType = AccessTokenType.Reference,
                 AllowedGrantTypes = GrantTypes.Implicit,
                 AllowAccessTokensViaBrowser = true,
-                RedirectUris = { 
+                RedirectUris = {
                     "http://localhost:4200"
                 },
-                RequireConsent = false,
                 PostLogoutRedirectUris = {
-                    "http://localhost:4200"
+                    "http://localhost:4200/unauthorized"
                 },
                 AllowedCorsOrigins = {
                     "http://localhost:4200"
                 },
                 AllowedScopes =
-                {   
+                {
                     IdentityServerConstants.StandardScopes.OpenId,
-                    IdentityServerConstants.StandardScopes.Profile,                    
-                    "id_manage"
-                }
-            });
-            return clients;
-        }
-
-        public static IEnumerable<IdentityResource> GetIdentityResources()
-        {
-            var identityResources = new List<IdentityResource>();
-            identityResources.Add(new IdentityResources.OpenId());
-            identityResources.Add(new IdentityResources.Profile());
-            identityResources.Add(new IdentityResources.Email());
-            identityResources.Add(new IdentityResource
-            {
-                Name = "roles",
-                DisplayName = "Your roles",
-                Emphasize = true,
-                UserClaims = {
+                    IdentityServerConstants.StandardScopes.Profile,
+                    "id_manage",
+                    "id_managescope",
                     "role"
                 }
             });
-            identityResources.Add(new IdentityResource
-            {
-                Name = "irsi_identity",
-                DisplayName = "IRSI Identity",
-                Description = "Identity scope for IRSI users",
-                UserClaims =
-                {
-                    "UseAVTService",
-                    "UseTeamSalesService",
-                    "UseSOSService",
-                    "teamApiConcept",
-                    "teamApiStore"
-                },
-            });
-
-            return identityResources;
+            return clients;
         }
     }
 }

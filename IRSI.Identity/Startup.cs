@@ -175,6 +175,16 @@ namespace IRSI.Identity
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
+                var roleManager = serviceScope.ServiceProvider.GetRequiredService<ApplicationRoleManager>();
+                if(!roleManager.Roles.Any())
+                {
+                    var adminRole = new ApplicationRole
+                    {
+                        Name = "admin"
+                    };
+                    var result = roleManager.CreateAsync(adminRole).Result;
+                }
+
                 serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
 
                 var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
